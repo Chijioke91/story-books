@@ -15,6 +15,10 @@ db();
 
 const app = express();
 
+// bodyparser middleware
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+
 app.set('view engine', 'ejs');
 app.set('layout', 'layouts/main');
 app.use(expressLayouts);

@@ -14,14 +14,14 @@
       <th></th>
     </tr>
     <tbody>
-      <%stories.forEach(({_id, title, createdAt}) => { %>
+      <%stories.forEach(({_id, title, status, createdAt}) => { %>
         <tr>
           <td>
-            <a href="/stories/<%=story._id%>"><%=title%></a>
+            <a href="/stories/<%=_id%>"><%=title%></a>
           </td>
           <td><%=createdAt%></td>
           <td><span class="dash-status">
-            <%= story.status%>
+            <%=status%>
           </span></td> 
         </tr>
       <%})%>
