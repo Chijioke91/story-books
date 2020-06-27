@@ -52,7 +52,36 @@ router.get('/edit/:id', requireAuth, async (req, res) => {
     }
 
     res.render('stories/edit', { story });
-  } catch (e) {}
+  } catch (e) {
+    console.error(e.message);
+    res.render('error/500');
+  }
+});
+
+// @desc  Edit Story
+// @route PUT /stories/:id
+router.put('/:id', requireAuth, async (req, res) => {
+  try {
+    let story = await Story.findById(req.params.id).lean();
+
+    if (!story) {
+      return res.render('error/404');
+    }
+
+    if (story.user != req.user.id) {
+      return res.redirect('stories/edit');
+    }
+
+    story = await Story.findOneAndUpdate({ _id: req.params.id }, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    res.redirect('/dashboard');
+  } catch (e) {
+    console.error(e.message);
+    res.render('error/500');
+  }
 });
 
 module.exports = router;
