@@ -37,6 +37,23 @@ router.get('/', requireAuth, async (req, res) => {
   }
 });
 
+// @desc  fecth a single story
+// @route GET /stories/:id
+router.get('/:id', async (req, res) => {
+  try {
+    const story = await Story.findById(req.params.id).populate('user').lean();
+
+    if (!story) {
+      return res.render('error/404');
+    }
+
+    res.render('stories/show', { story });
+  } catch (e) {
+    console.error(e.message);
+    res.render('error/404');
+  }
+});
+
 // @desc  Show edit page
 // @route GET /stories/edit/:id
 router.get('/edit/:id', requireAuth, async (req, res) => {
@@ -78,6 +95,35 @@ router.put('/:id', requireAuth, async (req, res) => {
     });
 
     res.redirect('/dashboard');
+  } catch (e) {
+    console.error(e.message);
+    res.render('error/500');
+  }
+});
+
+// @desc  Delete a Story
+// @route DELETE /stories/:id
+router.delete('/:id', requireAuth, async (req, res) => {
+  try {
+    await Story.remove({ _id: req.params.id });
+    res.redirect('/dashboard');
+  } catch (e) {
+    console.error(e.message);
+    res.render('error/500');
+  }
+});
+
+// render user stories
+router.get('/user/:userId', async (req, res) => {
+  try {
+    let stories = await Story.find({
+      user: req.params.userId,
+      status: 'public',
+    })
+      .populate('user')
+      .sort({ createdAt: 'desc' })
+      .lean();
+    res.render('stories/index', { stories });
   } catch (e) {
     console.error(e.message);
     res.render('error/500');
