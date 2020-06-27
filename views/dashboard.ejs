@@ -1,1 +1,33 @@
-<h1>Dashboard</h1>
+<h6>Dashboard</h6>
+
+<h3>Welcome <%= name %></h3>
+
+<p>Here are your stories</p>
+
+<% if(stories.length > 0){ %>
+<table class="stripped">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Date</th>
+      <th>Status</th>
+      <th></th>
+    </tr>
+    <tbody>
+      <%stories.forEach(({_id, title, createdAt}) => { %>
+        <tr>
+          <td>
+            <a href="/stories/<%=story._id%>"><%=title%></a>
+          </td>
+          <td><%=createdAt%></td>
+          <td><span class="dash-status">
+            <%= story.status%>
+          </span></td> 
+        </tr>
+      <%})%>
+    </tbody>
+  </thead>
+</table>
+<%}else{%>
+<p>You have not created any stories</p>
+<%}%>

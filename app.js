@@ -40,9 +40,10 @@ if (process.env.NODE_ENV === 'development') {
 
 app.use('/', require('./routes'));
 app.use('/auth', require('./routes/auth'));
+app.use('/stories', require('./routes/stories'));
 
 app.use((req, res) => {
-  res.render('404');
+  res.render('error/404');
 });
 
 const port = process.env.PORT || 8080;

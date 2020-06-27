@@ -1,3 +1,5 @@
-const elems = document.querySelector('.sidenav');
+const sideNavElems = document.querySelector('.sidenav');
+const selectElems = document.querySelector('#status');
 
-M.Sidenav.init(elems);
+M.Sidenav.init(sideNavElems);
+M.FormSelect.init(selectElems);
