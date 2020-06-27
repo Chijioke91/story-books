@@ -4,6 +4,8 @@ const morgan = require('morgan');
 const expressLayouts = require('express-ejs-layouts');
 const session = require('express-session');
 const passport = require('passport');
+const MongoStore = require('connect-mongo')(session);
+const mongoose = require('mongoose');
 
 const db = require('./config/db');
 
@@ -24,6 +26,7 @@ app.use(
     secret: 'relax cat',
     resave: false,
     saveUninitialized: false,
+    store: new MongoStore({ mongooseConnection: mongoose.connection }),
   })
 );
 
@@ -37,6 +40,10 @@ if (process.env.NODE_ENV === 'development') {
 
 app.use('/', require('./routes'));
 app.use('/auth', require('./routes/auth'));
+
+app.use((req, res) => {
+  res.render('404');
+});
 
 const port = process.env.PORT || 8080;
 
