@@ -17,7 +17,42 @@ router.post('/', requireAuth, async (req, res) => {
     res.redirect('/dashboard');
   } catch (e) {
     console.error(e.message);
+    res.render('error/500');
   }
+});
+
+// @desc  Show all stories
+// @route GET /stories
+router.get('/', requireAuth, async (req, res) => {
+  try {
+    const stories = await Story.find({ status: 'public' })
+      .populate('user')
+      .sort({ createdAt: 'desc' })
+      .lean();
+
+    res.render('stories/index', { stories });
+  } catch (e) {
+    console.error(e.message);
+    res.render('error/500');
+  }
+});
+
+// @desc  Show edit page
+// @route GET /stories/edit/:id
+router.get('/edit/:id', requireAuth, async (req, res) => {
+  try {
+    const story = await Story.findOne({ _id: req.params.id }).lean();
+
+    if (!story) {
+      return res.render('error/404');
+    }
+
+    if (story.user != req.user.id) {
+      return res.redirect('stories/edit');
+    }
+
+    res.render('stories/edit', { story });
+  } catch (e) {}
 });
 
 module.exports = router;

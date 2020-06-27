@@ -6,6 +6,7 @@ const session = require('express-session');
 const passport = require('passport');
 const MongoStore = require('connect-mongo')(session);
 const mongoose = require('mongoose');
+const { formatDate, truncate, stripTags, editIcon } = require('./helpers/ejs');
 
 const db = require('./config/db');
 
@@ -14,6 +15,11 @@ require('./config/passport')(passport);
 db();
 
 const app = express();
+
+app.locals.formatDate = formatDate;
+app.locals.truncate = truncate;
+app.locals.stripTags = stripTags;
+app.locals.editIcon = editIcon;
 
 // bodyparser middleware
 app.use(express.urlencoded({ extended: false }));
@@ -37,6 +43,12 @@ app.use(
 // passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
+
+// set global user
+app.use((req, res, next) => {
+  res.locals.user = req.user || null;
+  next();
+});
 
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
